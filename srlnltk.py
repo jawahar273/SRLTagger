@@ -22,7 +22,7 @@ from os import path, sep, environ
 @python_2_unicode_compatible
 class SennaSRLTagger(Senna):
     
-    def __init__(self, path_='', encoding='utf-8'):
+    def __init__(self, path_, encoding='utf-8'):
         """
         Additional
           line 21: addtional for `SRL` operation
@@ -43,7 +43,7 @@ class SennaSRLTagger(Senna):
                 if not path.isfile(exe_file_2):
                     raise OSError("Senna executable expected at %s or %s but not found" % (exe_file_1,exe_file_2))
         #"""
-    def tag_sents(self, sentences):
+    def tag_sents_yield(self, sentences, index_s):
         
         encoding = self._encoding
 
@@ -65,11 +65,47 @@ class SennaSRLTagger(Senna):
         (stdout, stderr) = p.communicate(input=_input)
         if p.returncode != 0:
             raise RuntimeError('Senna command failed! Details: %s' % stderr)
-        return stdout.decode(encoding).split()
-        #return tagged_sents       
+        stdout =  stdout.decode(encoding).split()
+        index = stdout.index(index_s)
+        length_stdout = len(stdout) 
+        for i in range(0, length_stdout, index): 
+                yield (index,  stdout[i:i+index])
+
+
+    def tag_sents(self, sentences, index_s):
+        
+        encoding = self._encoding
+        tagged_sents = []
+        if not path.isfile(self.executable(self._path)):
+            raise OSError("Senna executable expected at %s but not found" % self.executable(self._path))
+
+
+        # Build the senna command to run the tagger
+        _senna_cmd = [self.executable(self._path), '-path', self._path, '-usrtokens', '-iobtags']
+        _senna_cmd.extend(['-'+op for op in self.operations])
+
+        # Serialize the actual sentences to a temporary string
+        _input = '\n'.join((' '.join(x) for x in sentences))+'\n'
+        if isinstance(_input, text_type) and encoding:
+            _input = _input.encode(encoding)
+
+        # Run the tagger and get the output
+        p = Popen(_senna_cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        (stdout, stderr) = p.communicate(input=_input)
+        if p.returncode != 0:
+            raise RuntimeError('Senna command failed! Details: %s' % stderr)
+        stdout =  stdout.decode(encoding).split()
+        index = stdout.index(index_s) # finding the next word through list index
+        length_stdout = len(stdout) 
+        for i in range(0, length_stdout, index): 
+                tagged_sents.append(( index,  stdout[i:i+index]))
+
+        return tagged_sents   
 
     def tag_sents2file(self, sentences, file_name, file_mode):
-        
+        '''
+        :Return: 0 on success on writting file 
+        '''
         encoding = self._encoding
 
         if not path.isfile(self.executable(self._path)):
@@ -100,9 +136,16 @@ class SennaSRLTagger(Senna):
         """
         return super(SennaSRLTagger, self).executable(base_path)
 
-    def tag(self, tokens):
-        return self.tag_sents([tokens])
-        
+    def tag(self, tokens, no_list = False):
+        """
+         :token: tokenized words
+         :no_list: calling a function to generate list or yield object
+        """
+        if not no_list:
+            return self.tag_sents([tokens], tokens[1])
+
+        return self.tag_sents_yield([tokens], tokens[1])
+
     def tag2file(self, tokens,file_name='testing_file', file_mode='a'):
         '''
           :tokens: tokensized words 
