@@ -3,8 +3,8 @@ Senna is a powerful tool for NLP. Sematic Role Labelling is process using NLP. T
 
 ## Requirement
 
-NLTK 3.2.1
-Senna
+1. NLTK 3.2.1
+* Senna
 
 ###API
 
