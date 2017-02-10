@@ -22,7 +22,7 @@ from os import path, sep, environ
 @python_2_unicode_compatible
 class SennaSRLTagger(Senna):
     
-    def __init__(self, path_, encoding='utf-8'):
+    def __init__(self, path_='', encoding='utf-8'):
         """
         Additional
           line 21: addtional for `SRL` operation
