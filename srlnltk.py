@@ -24,9 +24,10 @@ class SennaSRLTagger(Senna):
     
     def __init__(self, path_, encoding='utf-8'):
         """
-        Additional
-          line 21: addtional for `SRL` operation
+
         """
+        if  not super(SennaSRLTagger, self).SUPPORTED_OPERATIONS.count('srl'): 
+            super(SennaSRLTagger, self).SUPPORTED_OPERATIONS.append('srl')
         super(SennaSRLTagger, self).SUPPORTED_OPERATIONS.append('srl')
         super(SennaSRLTagger, self).__init__(path_,  ['srl'], encoding)
         self.operations =  ['srl']
