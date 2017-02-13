@@ -20,8 +20,8 @@ Senna is a powerful tool for NLP. Sematic Role Labelling is process using NLP. T
 ### SennaSRKTagger.tag(token, no_list=False)
 This method genetare the tagged SRL words on the attribute it has been passed. The sentence should be word tokenize.
 
-1. To generate `no_list` must be `True` and a default one.
-* To geneate a `yield` object `no_list` must be `False`.
+1. To generate a list, `no_list` must be `True` and a default one.
+* To geneate a `yield`, object `no_list` must be `False`.
  
 ### SennaSRKTagger.tag2file(tokens,file_name='testing_file.txt', file_mode='w')
  Generate text file with given name and file mode for writing the file. If you are using multiple sentence the change the `file_mode` to 'a'. 
