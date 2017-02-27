@@ -1,6 +1,7 @@
 # Semantic Role Labeling
 Semantic role labeling, sometimes also called shallow semantic parsing, is a task in natural language processing consisting of the detection of the semantic arguments associated with the predicate or verb of a sentence and their classification into their specific roles. 
 > Define in Wikiperida
+
 # SRLTagger
 Senna is a powerful tool for NLP. Sematic Role Labeling is process using NLP. This process is intergated with Python NLTK
 
